@@ -1,0 +1,83 @@
+---
+title: "delivery stats"
+author: "Danielle Janney"
+date: "4/4/2021"
+output:
+  html_document: default
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(tidyverse)
+load("deliverystats.Rdata")
+```
+
+# My Delivery Order Stats
+
+This data is personal and likely not much use for anyone else. I work part-time as a restaurant delivery driver and for fourteen days I collected information for each delivery I took. There are 182 entries that look like this:
+
+```{r deliveries head, echo=FALSE}
+head(deliveries)
+```
+
+## What am I doing with this data?
+
+I am interested to see how the variables of payment type and order total impact the tip I recieve. Looking at the table above, there are three payment types: Acct (third-party delivery accounts: UberEats, BiteSquad, and GrubHub), Cash, and CC (credit card). I did not document any cash tips, but kept record of cash orders regardless.  
+
+***  
+  
+## Scatter Plots
+
+The first scatter plot shows the relationship between tips and order totals (which include the tip)
+
+```{r ggplot1, echo=FALSE, warning=FALSE}
+abc <- deliveries[!deliveries$Payment_Type == "Cash" & !deliveries$Tip == "NA", ]
+ACCt_dels <- na.omit(abc)
+
+Tips1 <- ACCt_dels$Tip
+Order_Totals1 <- ACCt_dels$Order_Total
+Payment1 <- ACCt_dels$Payment_Type
+
+myColors <- c("deepskyblue3","gold3")
+names(myColors) <- levels(ACCt_dels$Payment_Type)
+colScale <- scale_colour_manual(name = "Payment Type",values = myColors)
+
+ggplot(ACCt_dels, aes(Order_Totals1,Tips1)) + geom_point(aes(colour=Payment1)) +
+  labs(title="Order Totals Including Tips") +
+  scale_x_continuous(name="Order Total (in dollars)",breaks=seq(0,120,10),limits=c(0,100)) +
+  scale_y_continuous(name="Tips (in dollars)",breaks=c(0,5,10,15,20),limits=c(0,20)) +
+  colScale
+```
+
+It is difficult to produce an accurate subtotal for the orders for a couple of reasons:  
+1. Some orders have no delivery fee as a promotion  
+2. Acct orders have different delivery fees and are not discerned  
+I will instead simply compare the order's total (before tip) to the order's tip:
+
+```{r ggplot 2, echo=FALSE, warning=FALSE}
+ggplot(ACCt_dels,aes(Subtotal1,Tips1)) + geom_point(aes(colour=Payment1)) +
+  labs(title="Order Totals Before Tip and Tips") +
+  scale_x_continuous(name="Order Total (in dollars)",breaks=seq(0,120,10),limits=c(0,100)) +
+  scale_y_continuous(name="Tips (in dollars)",breaks=c(0,5,10,15,20),limits=c(0,20)) +
+  colScale
+
+```
+
+A very subtle difference, I must say.
+
+## A Boxplot
+
+```{r boxplot, echo=FALSE, warning=FALSE}
+ggplot(ACCt_dels, aes(Day_of_the_Week,Tip)) + geom_boxplot(fill=c("khaki","darkolivegreen1","lightcyan3","lavender","mistyrose")) +
+  labs(title="Summary of Tips by Day") +
+  scale_y_continuous(name="Tip (in dollars)",breaks=c(0,5,10,15,20),limits=c(0,20)) +
+  scale_x_discrete(name="Day of the Week")
+```
+
+This boxplot reinforces that no matter the day of the week and the range of tip values, the mean is relatively consistent.
+
+***
+
+To be continued...
