@@ -1,0 +1,89 @@
+---
+title: "deliverystats"
+author: "Danielle Janney"
+date: "4/26/2021"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(plyr)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(rlang)
+library(ggpubr)
+
+deliveries <- read_csv("data/deliveries.csv")
+```
+
+# My Delivery Order Stats
+
+This data is personal and likely not much use for anyone else. I work at a restaurant as a delivery driver and for fourteen days I collected information for each delivery I took. There are 182 entries that look like this:
+
+```{r deliveries head, echo=FALSE}
+head(deliveries)
+```
+
+## What am I doing with this data?
+
+I am interested to see how the variables of payment type and order total impact the tip I receive. Looking at the table above, there are three payment types: Acct (third-party delivery accounts: UberEats, BiteSquad, and GrubHub), Cash, and CC (credit card). I did not document any cash tips, but kept record of cash orders regardless.
+
+The following bar plot encourages me to mutate the data to compare CC and Acct deliveries
+
+```{r Payment Type bar plot, echo=FALSE}
+Payment_Counts <- table(deliveries$Payment_Type)
+barplot(Payment_Counts, main="Frequency of Payment Types",
+        xlab="Payment Types", col=c("lightblue","green","gold"))
+```
+```{r deliveries1, include=FALSE}
+deliveries1 <- read_csv("data/deliveries1.csv")
+```
+
+The data I will focus on looks like this:
+```{r deliveries1 head,echo=FALSE}
+head(deliveries1)
+```
+# The Good Part
+Now things get exciting. Here are some scatterplots:
+```{r load,echo=FALSE}
+source("R/functions.R")
+source("R/values.R")
+source("R/graphs.R")
+```
+```{r scatter arrangement,echo=FALSE,warning=FALSE}
+ggarrange(TTP,TuesTTP,ThursTTP,FriTTP,SatTTP,SunTTP,ncol=2,nrow=3,common.legend = TRUE)
+```
+
+It is obvious that I work mostly on weekend days. But isn't it interesting that the bigger money orders were on Tuesday? 
+I would never have guessed.
+
+Okay, so there's more than just scatter plots:
+```{r payment type arrangement,echo=FALSE,warning=FALSE}
+ggarrange(TTP,PayMTBar,PayTBox,PayTDen,ncol=2,nrow=2)
+```
+
+Those are some impressive graphics, if I do say so myself. I am partial to the aesthetic of density plots. Cool, right?
+
+Let's look at some day plots.
+
+```{r day arrangements,echo=FALSE,warning=FALSE}
+ggarrange(TTDayP,TMDayBar,DayTipBox,DayTDen,ncol=2,nrow=2)
+```
+
+Just as I suspected, Tuesday came out on top in the mean game. Sundays are usually pretty solid days for deliveries, so it is hardly surprising it ranks second. The boxplot is configured to show the volume of deliveries, so Thursday and Tuesday look especially thin because I worked only in the evening.
+
+This next one may look a bit messy, but it is fun to look at.
+Ladies and gentlemen, I give you the Dates:
+
+```{r date ggarrangements,echo=FALSE,warning=FALSE}
+ggarrange(TTDateP,TMDateBar,DateTipBox,DateTDen,ncol=2,nrow=2)
+
+```
+
+Thanks for checking out my graphs.
+If you are interested in seeing the other codes I created for this data,
+you can find it all on GitHub at https://github.com/djanney1/deliverystats/tree/master
