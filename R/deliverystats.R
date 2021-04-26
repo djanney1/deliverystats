@@ -1,3 +1,4 @@
+# Welcome! This is the file where the magic happens. Or at least how I would like my code to be seen.
 # This R file is more like a blog post, I guess. I had a desire to see
 # specific relationships of my data and this is the shorthand process.
 
