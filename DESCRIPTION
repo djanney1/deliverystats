@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Danielle Janney
 Maintainer: <daniellejanney@gmail.com>
 Description: This package stores and analyzes my restaurant delivery data from March 9 to April 3 of 2021.
-    The data will is used to graph relationships and to show what I have learned in R. 
+    The data is used to graph relationships and to show what I have learned in R. 
     For personal use, mostly.
 License: GNU General Public License
 LazyData: true
